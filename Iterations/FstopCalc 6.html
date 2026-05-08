@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Darkroom Tool</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 12px;
+    background: #111;
+    color: #eee;
+    font-size: 18px;
+    line-height: 1.4;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h2 { margin-top: 0; }
+
+.control {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+label { margin-bottom: 6px; opacity: 0.9; }
+
+input, select, button {
+    padding: 10px;
+    font-size: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    margin: 8px 0;
+    background: #222;
+    color: #eee;
+    border: 1px solid #444;
+    cursor: pointer;
+}
+
+/* CARD VIEW */
+#panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.card {
+    border: 1px solid #444;
+    padding: 12px;
+    background: #1a1a1a;
+    cursor: pointer;
+}
+
+.card:hover { background: #222; }
+
+.selected {
+    outline: 2px solid #4fc3f7;
+    background: #263238 !important;
+}
+
+.base {
+    font-weight: bold;
+    color: #4fc3f7;
+}
+
+/* TABLE VIEW */
+.table-container {
+    display: none;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #444;
+    padding: 12px;
+    text-align: center;
+}
+
+th { background: #222; }
+
+tr:nth-child(even) {
+    background: #1a1a1a;
+}
+
+.base-row {
+    font-weight: bold;
+    color: #4fc3f7;
+}
+
+@media (min-width: 768px) {
+    #panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    input, select {
+        width: 300px;
+    }
+
+    button {
+        width: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h2>F-Stop Darkroom Printing Tool</h2>
+
+<div class="control">
+    <label>Base Time (seconds)</label>
+    <input type="number" id="baseTime" value="10">
+</div>
+
+<div class="control">
+    <label>F-Stop Increment</label>
+    <select id="increment">
+        <option value="0.1">0.1</option>
+        <option value="0.2">0.2</option>
+        <option value="0.3" selected>0.3</option>
+        <option value="0.5">0.5</option>
+        <option value="1">1</option>
+    </select>
+</div>
+
+<div class="control">
+    <label>Steps</label>
+    <select id="steps">
+        <option>5</option>
+        <option>6</option>
+        <option selected>7</option>
+        <option>8</option>
+        <option>9</option>
+    </select>
+</div>
+
+<div class="control">
+    <label>Display Mode</label>
+    <select id="viewMode">
+        <option value="cards">Card View</option>
+        <option value="table">Table View</option>
+    </select>
+</div>
+
+<div class="control">
+    <label>Split Filter Mode</label>
+    <select id="splitMode">
+        <option value="off" selected>Off</option>
+        <option value="on">On</option>
+    </select>
+</div>
+
+
+<div class="control" id="splitControls">
+
+    <label>
+        Split Filter Balance:
+        <span style="float:left;">Lower Contrast</span>
+        <span style="float:right;">Higher Contrast</span>
+    </label>
+
+    <input type="range" id="splitBalance" min="0" max="100" value="50">
+</div>
+
+
+<button onclick="calculate()">Generate</button>
+<button onclick="exportPDF()">Export PDF</button>
+
+<!-- CARD VIEW -->
+<div id="panel"></div>
+
+<!-- TABLE VIEW -->
+<div class="table-container" id="tableContainer">
+    <table>
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<script>
+let lastData = [];
+
+
+// ========== FUNCTIONS ==========
+
+function setupAutoCalculate() {
+	const ids = [
+		"baseTime",
+		"increment",
+		"steps",
+		"viewMode",
+		"splitMode",
+		"splitBalance"
+	];
+
+	ids.forEach(id => {
+		const el = document.getElementById(id);
+		if (!el) return;
+
+		// instant updates for sliders + selects
+		el.addEventListener("input", calculate);
+		el.addEventListener("change", calculate);
+	});
+}
+
+
+function toggleSplitUI() {
+	const mode = document.getElementById("splitMode").value;
+	const controls = document.getElementById("splitControls");
+
+	controls.style.display = (mode === "on") ? "block" : "none";
+}
+
+
+function calculate() {
+
+    const baseTime = Math.round(parseFloat(document.getElementById("baseTime").value));
+    document.getElementById("baseTime").value = baseTime;
+
+    const increment = parseFloat(document.getElementById("increment").value);
+    const steps = parseInt(document.getElementById("steps").value);
+    const viewMode = document.getElementById("viewMode").value;
+    const splitMode = document.getElementById("splitMode").value;
+    const splitBalance = parseFloat(document.getElementById("splitBalance").value) / 100;
+
+    const panel = document.getElementById("panel");
+    const tbody = document.getElementById("tableBody");
+    const tableHead = document.getElementById("tableHead");
+
+    panel.innerHTML = "";
+    tbody.innerHTML = "";
+    lastData = [];
+
+    // HEADER
+    if (viewMode === "table") {
+        tableHead.innerHTML = splitMode === "on"
+            ? `<tr>
+                <th>Step</th><th>Stops</th><th>Strip</th>
+                <th>Exposure</th><th>Split</th>
+              </tr>`
+            : `<tr>
+                <th>Step</th><th>Stops</th><th>Strip</th><th>Exposure</th>
+              </tr>`;
+    }
+
+    const half = Math.floor(steps / 2);
+    let stepCount = 0;
+
+    for (let i = half; i >= -half; i--) {
+        stepCount++;
+
+        const stops = i * increment;
+        const time = baseTime * Math.pow(2, stops);
+        const isBase = Math.abs(time - baseTime) < 0.001;
+
+        let stripTime = time;
+
+        let low = time;
+        let high = 0;
+
+        if (splitMode === "on") {
+            low = time * (1 - splitBalance);
+            high = time * splitBalance;
+        }
+
+        lastData.push({
+		step: stepCount,
+		stops,
+		time,
+		strip: stripTime,
+		low,
+		high,
+		isBase
+	});
+
+        // CARD VIEW
+        if (viewMode === "cards") {
+            const card = document.createElement("div");
+            card.className = "card";
+            if (isBase) card.classList.add("base");
+
+            card.innerHTML = `
+                <div><b>Step ${stepCount}</b></div>
+                <div>Stops: ${isBase ? "BASE" : stops.toFixed(2)}</div>
+                <div>Exposure: ${time.toFixed(1)}s</div>
+                ${splitMode === "on"
+                    ? `<div>LOW: ${low.toFixed(1)}s | HIGH: ${high.toFixed(1)}s</div>`
+                    : ""}
+            `;
+
+            panel.appendChild(card);
+        }
+
+        // TABLE VIEW
+        if (viewMode === "table") {
+            const row = document.createElement("tr");
+            if (isBase) row.classList.add("base-row");
+
+            row.innerHTML = splitMode === "on"
+                ? `<td>${stepCount}</td>
+                   <td>${isBase ? "BASE" : stops.toFixed(2)}</td>
+                   <td>${stripTime.toFixed(1)}</td>
+                   <td>${time.toFixed(1)}</td>
+                   <td>LOW: ${low.toFixed(1)} | HIGH: ${high.toFixed(1)}</td>`
+                : `<td>${stepCount}</td>
+                   <td>${isBase ? "BASE" : stops.toFixed(2)}</td>
+                   <td>${stripTime.toFixed(1)}</td>
+                   <td>${time.toFixed(1)}</td>`;
+
+            tbody.appendChild(row);
+        }
+    }
+
+    document.getElementById("panel").style.display =
+        viewMode === "cards" ? "grid" : "none";
+
+    document.getElementById("tableContainer").style.display =
+        viewMode === "table" ? "block" : "none";
+}
+
+
+window.onload = () => {
+	toggleSplitUI();
+	setupAutoCalculate();
+
+	document.getElementById("splitMode").addEventListener("change", () => {
+		toggleSplitUI();
+		calculate();
+	});
+
+	calculate();
+};
+
+
+
+/* =========================
+   PDF EXPORT (SIMPLE)
+   Uses browser print-to-PDF
+========================= */
+function exportPDF() {
+    const mode = document.getElementById("viewMode").value;
+
+    const printWindow = window.open('', '', 'width=800,height=600');
+
+    let html = `
+    <html>
+    <head>
+
+    <title>F-Stop Export</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: white; color: black; }
+        .card { border: 1px solid #000; padding: 10px; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 8px; text-align: center; }
+        .base { font-weight: bold; }
+    </style>
+    </head>
+    <body>
+
+    <h2>F-Stop Exposure Sheet</h2>
+
+<div style="margin-bottom: 20px; padding: 10px; border: 1px solid #000;">
+    <b>Settings</b><br>
+    Base Time: ${document.getElementById("baseTime").value}s<br>
+    Increment: ${document.getElementById("increment").value}<br>
+    Steps: ${document.getElementById("steps").value}<br>
+    ${splitMode === "on" ? `<br>Split Balance: ${splitBalance}%` : ""}
+</div>
+
+    `;
+
+    // ================= CARD VIEW =================
+if (mode === "cards") {
+    lastData.forEach(d => {
+        html += `
+        <div class="card ${d.isBase ? 'base' : ''}">
+            <b>Step ${d.step}</b><br>
+            Exposure: ${d.time.toFixed(1)}s<br>
+            Strip: ${d.strip.toFixed(1)}s
+            ${splitMode === "on" ? `
+                <br>Low: ${d.low.toFixed(1)}s
+                <br>High: ${d.high.toFixed(1)}s
+            ` : ""}
+        </div>`;
+    });
+}
+
+    // ================= TABLE VIEW =================
+    else {
+        html += `
+        <table>
+            <tr>
+                <th>Step</th>
+                <th>Exposure</th>
+                <th>Strip</th>
+            </tr>
+        `;
+
+        lastData.forEach(d => {
+            html += `
+            <tr class="${d.isBase ? 'base' : ''}">
+                <td>${d.step}</td>
+                <td>${d.time.toFixed(1)}</td>
+                <td>${d.strip.toFixed(1)}</td>
+            </tr>`;
+        });
+
+        html += `</table>`;
+    }
+
+    html += `
+    <script>
+        window.onload = function () {
+            window.print();
+        }
+    <\/script>
+    </body></html>`;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+}
+
+
+</script>
+
+</body>
+</html>

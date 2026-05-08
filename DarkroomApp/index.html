@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Darkroom Tool</title>
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+
+<h2>BWK Darkroom Tools</h2>
+
+<div class="nav-toggle">
+    <button id="showCalcBtn" class="active">F‑Stop Calculator</button>
+    <button id="showLogBtn">Print Log</button>
+</div>
+
+
+<!-- ========== F-STOP CALCULATOR SECTION BEGIN ========== -->
+
+<section id="calcView">
+    <!-- F‑Stop calculator -->
+
+    <h2>F-Stop Darkroom Printing Tool</h2>
+
+
+    <!-- ========== CONTROLS BEGIN ========== -->
+
+    <div class="control">
+        <label>Base Time (seconds)</label>
+        <input type="number" id="baseTime" value="10">
+    </div>
+
+    <div class="control">
+        <label>F-Stop Increment</label>
+        <select id="increment">
+            <option value="0.1">0.1</option>
+            <option value="0.2">0.2</option>
+            <option value="0.3" selected>0.3</option>
+            <option value="0.5">0.5</option>
+            <option value="1">1</option>
+        </select>
+    </div>
+
+    <div class="control">
+        <label>Steps</label>
+        <select id="steps">
+            <option>3</option>
+            <option>5</option>
+            <option selected>7</option>
+            <option>9</option>
+            <option>11</option>
+        </select>
+    </div>
+
+    <!-- I want to have a toggle between "Cards" and "Table" with "Table" being defaulted on both phones and desktop -->
+    <div class="control" id="viewMode">
+        <label>Display Mode</label>
+        <div class="toggle">
+            <button id="cardBtn">Cards</button>
+            <button id="tableBtn" class="active">Table</button>
+        </div>
+    </div>
+
+    <!-- ========== CONTROLS END ========== -->
+
+
+    <!-- CARD VIEW -->
+    <div id="panel"></div>
+
+
+    <!-- TABLE VIEW -->
+    <div class="table-container" id="tableContainer">
+        <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+
+    <!-- ========== ACTIONS BEGIN ========== -->
+
+    <div class="actions">
+        <!-- create the "Export to PDF" button -->
+        <button id="exportBtn">Export PDF</button>
+    </div>
+
+    <!-- ========== ACTIONS END ========== -->    
+
+
+</section>
+
+<!-- ========== F-STOP CALCULATOR SECTION END ========== -->
+
+
+<!-- ========== PRINT LOG SECTION BEGIN ========== -->
+<section id="logView" style="display:none;">
+    <!-- Print Log -->
+
+    <section id="printLog">
+        <h2>Darkroom Print Log</h2>
+        <div class="control">
+            <label>Negative / Print Name</label>
+            <input id="logTitle" type="text" placeholder="e.g. HP5+_Portrait_01">
+        </div>
+        <div class="control">
+            <label>Paper / Filter / Notes</label>
+            <textarea id="logNotes" placeholder="Ilford MGIV, filter 2.5, 16 s base, dodged highlights..."></textarea>
+        </div>
+        <button id="saveLogBtn">Save Entry</button>
+        <h3>Saved Prints</h3>
+        <ul id="logList"></ul>
+    </section>
+
+</section>
+
+<!-- ========== PRINT LOG SECTION END ========== -->
+
+
+<!-- MAIN APP ENTRY -->
+<script type="module" src="js/app.js"></script>
+
+
+</body>
+</html>

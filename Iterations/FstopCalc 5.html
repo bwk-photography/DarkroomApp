@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Darkroom Tool</title>
+
+<style>
+    /* =========================
+       BASE (MOBILE FIRST)
+    ========================= */
+
+    body {
+        font-family: Arial, sans-serif;
+        padding: 12px;
+        background: #111;
+        color: #eee;
+        font-size: 18px;
+        line-height: 1.4;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    /* =========================
+       CONTROL GROUPS (FIXED LAYOUT)
+    ========================= */
+
+    .control {
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 6px;
+        opacity: 0.9;
+    }
+
+    input, select, button {
+        padding: 10px;
+        font-size: 18px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    button {
+        margin: 8px 0;
+        background: #222;
+        color: #eee;
+        border: 1px solid #444;
+        cursor: pointer;
+    }
+
+    button:active {
+        background: #333;
+    }
+
+    /* =========================
+       CARD VIEW (DARKROOM MODE)
+    ========================= */
+
+    #panel {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .card {
+        border: 1px solid #444;
+        padding: 12px;
+        background: #1a1a1a;
+        cursor: pointer;
+    }
+
+    .card:hover {
+        background: #222;
+    }
+
+    .card div {
+        display: block;
+        margin: 4px 0;
+    }
+
+    .selected {
+        outline: 2px solid #4fc3f7;
+        background: #263238 !important;
+    }
+
+    .base {
+        font-weight: bold;
+        color: #4fc3f7;
+        background: #222;
+    }
+
+    /* =========================
+       TABLE VIEW
+    ========================= */
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+        display: none;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid #444;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background: #222;
+    }
+
+    tr:nth-child(even) {
+        background: #1a1a1a;
+    }
+
+    .selected-row {
+        outline: 2px solid #4fc3f7;
+        background: #263238 !important;
+    }
+
+    .base-row {
+        font-weight: bold;
+        color: #4fc3f7;
+        background: #222;
+    }
+
+    /* =========================
+       DESKTOP OVERRIDES
+    ========================= */
+
+    @media (min-width: 768px) {
+        #panel {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        input, select {
+            width: 300px;
+        }
+
+        button {
+            width: auto;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<h2>F-Stop Darkroom Printing Tool</h2>
+
+<div class="control">
+	<label>Base Time (seconds):</label>
+	<input type="number" id="baseTime" value="10" step="1" min="1" max="60">
+</div>
+
+<div class="control">
+	<label>F-Stop Increment:</label>
+	<select id="increment">
+		<option value="0.1">0.1</option>
+		<option value="0.2">0.2</option>
+		<option value="0.3" selected>0.3</option>
+		<option value="0.5">0.5</option>
+		<option value="1">1</option>
+	</select>
+</div>
+
+
+<div class="control">
+	<label>Steps:</label>
+	<select id="steps">
+		<option>5</option>
+		<option>6</option>
+		<option selected>7</option>
+		<option>8</option>
+		<option>9</option>
+		<option>10</option>
+	</select>
+</div>
+
+
+<div class="control">
+	<label>Display Mode:</label>
+	<select id="viewMode">
+		<option value="cards">Card View</option>
+		<option value="table">Table View</option>
+	</select>
+</div>
+
+
+<div class="control">
+	<label>Split Filter Mode:</label>
+	<select id="splitMode">
+		<option value="off" selected>Off</option>
+		<option value="on">On</option>
+	</select>
+</div>
+
+
+<!--
+<label>Paper Contrast (Gamma)</label>
+<input type="range" id="gamma" min="0.6" max="1.4" step="0.05" value="1.0">
+-->
+
+<div class="control" id="splitControls">
+    <label>Split Balance (Low ↔ High)</label>
+    <input type="range" id="splitBalance" min="0" max="100" value="50">
+</div>
+
+<button onclick="calculate()">Generate</button>
+<button onclick="exportPDF()">Export PDF</button>
+
+
+<!-- CARD VIEW -->
+<div id="panel"></div>
+
+<!-- TABLE VIEW -->
+<div class="table-container" id="tableContainer">
+		<table id="resultsTable">
+		<thead id="tableHead"></thead>
+		<tbody id="tableBody"></tbody>
+	</table>
+</div>
+
+
+<script>
+let lastData = [];
+
+function toggleSplitUI() {
+	const mode = document.getElementById("splitMode").value;
+	document.getElementById("splitControls").style.display =
+		mode === "on" ? "block" : "none";
+
+	document.getElementById("splitHeader").style.display =
+		mode === "on" ? "table-cell" : "none";
+}
+
+
+function setupAutoCalculate() {
+	["baseTime","increment","steps","viewMode","splitMode","splitBalance"]
+	.forEach(id => {
+		const el = document.getElementById(id);
+		el.addEventListener("input", () => {
+			toggleSplitUI();
+			calculate();
+		});
+	});
+}
+
+
+window.onload = () => {
+	toggleSplitUI();
+	setupAutoCalculate();
+	calculate();
+};
+
+
+function applyPaperCurve(exposure, gamma) {
+	return Math.pow(exposure, gamma);
+}
+
+
+function calculate() {
+
+	const tableHead = document.getElementById("tableHead");
+
+	const baseTimeInput = document.getElementById('baseTime');
+
+	let baseTime = parseFloat(baseTimeInput.value);
+
+	// force whole seconds (handles pasted decimals too)
+	baseTime = Math.round(baseTime);
+
+	// reflect correction back to UI
+	baseTimeInput.value = baseTime;
+
+	//const baseTime = parseFloat(document.getElementById('baseTime').value);
+	const increment = parseFloat(document.getElementById('increment').value);
+	const steps = parseInt(document.getElementById('steps').value);
+	const viewMode = document.getElementById("viewMode").value;
+
+	const panel = document.getElementById("panel");
+	const tbody = document.querySelector("tableBody");
+
+	const splitMode = document.getElementById("splitMode").value;
+	const splitBalance = parseFloat(document.getElementById("splitBalance").value) / 100;
+	const splitBalanceEl = document.getElementById("splitBalance");
+
+	const splitControls = document.getElementById("splitControls");
+	splitControls.style.display = splitMode === "on" ? "block" : "none";
+
+	// hide/show slider based on mode
+	splitBalanceEl.style.display = splitMode === "on" ? "block" : "none";
+
+	const gamma = 1.0;
+
+	if (splitMode === "on") {
+		tableHead.innerHTML = `
+			<tr>
+				<th>Step</th>
+				<th>Stops</th>
+				<th>Strip</th>
+				<th>Exposure</th>
+				<th>Split (L/H)</th>
+				<th>Response</th>
+			</tr>
+		`;
+	} else {
+		tableHead.innerHTML = `
+			<tr>
+				<th>Step</th>
+				<th>Stops</th>
+				<th>Strip</th>
+				<th>Exposure</th>
+			</tr>
+		`;
+	}
+
+	panel.innerHTML = "";
+	tbody.innerHTML = "";
+	lastData = [];
+
+	const half = Math.floor(steps / 2);
+	let stripTime = 0;
+	let stepCount = 0;
+
+	for (let i = half; i >= -half; i--) {
+		stepCount++;
+
+		const stops = i * increment;
+		const time = baseTime * Math.pow(2, stops);
+		const isBase = Math.abs(time - baseTime) < 0.0001;
+
+		const stops_next = (i - 1) * increment;
+		const time_next = baseTime * Math.pow(2, stops_next);
+
+
+		// ========== TEST STRIP CALCULATION ==========
+		// on the final step, show the total time of the last exposure
+		// for the rest, use the current exposure time minus the exposure time for the next step
+		if (stepCount === steps) {
+			stripTime = time;
+		} else {
+	  	      stripTime = time-time_next;
+		}
+
+
+		// ========== SPLIT FILTER CALCULATION ==========
+		let lowExposure, highExposure;
+
+		if (splitMode === "on") {
+			lowExposure = time * (1 - splitBalance);
+			highExposure = time * splitBalance;
+		} else {
+			lowExposure = time;
+			highExposure = 0;
+		}
+
+
+		// ========== PAPER RESPONSE MODEL ==========
+		const lowResponse = applyPaperCurve(lowExposure, gamma);
+		const highResponse = applyPaperCurve(highExposure, gamma);
+		const totalResponse = lowResponse + highResponse;
+
+
+		const rowData = {
+			step: stepCount,
+			stops,
+			time,
+			strip: stripTime,
+			isBase
+		};
+
+		lastData.push(rowData);
+
+
+		// ================= CARD VIEW =================
+		if (viewMode === "cards") {
+			const card = document.createElement("div");
+			card.className = "card";
+			if (isBase) card.classList.add("base");
+
+			card.innerHTML = `
+				<div><b>Step ${stepCount}</b></div>
+				<div>Stops: ${isBase ? "BASE" : stops.toFixed(2)}</div>
+
+				<div>Low Exp: ${lowExposure.toFixed(1)}s → ${lowResponse.toFixed(1)}</div>
+				<div>High Exp: ${highExposure.toFixed(1)}s → ${highResponse.toFixed(1)}</div>
+
+				<div>Strip: ${stripTime.toFixed(1)}s</div>
+				<div>Exposure: ${time.toFixed(1)}s</div>
+			`;
+
+			card.addEventListener("click", () => {
+				document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+				card.classList.add("selected");
+			});
+
+			panel.appendChild(card);
+		}
+
+
+		// ================= TABLE VIEW =================
+		if (viewMode === "table") {
+			const row = document.createElement("tr");
+
+			if (isBase) row.classList.add("base-row");
+
+
+			if (splitMode === "on") {
+				row.innerHTML = `
+					<td>${stepCount}</td>
+					<td>${isBase ? "BASE" : stops.toFixed(2)}</td>
+					<td>${stripTime.toFixed(1)}</td>
+					<td>${time.toFixed(1)}</td>
+					<td>${lowExposure.toFixed(1)} / ${highExposure.toFixed(1)}</td>
+					<td>${totalResponse.toFixed(2)}</td>
+				`;
+			} else {
+				row.innerHTML = `
+					<td>${stepCount}</td>
+					<td>${isBase ? "BASE" : stops.toFixed(2)}</td>
+					<td>${stripTime.toFixed(1)}</td>
+					<td>${time.toFixed(1)}</td>
+				`;
+			}
+
+
+			row.addEventListener("click", () => {
+				document.querySelectorAll("tr").forEach(r => r.classList.remove("selected-row"));
+				row.classList.add("selected-row");
+			});
+
+				tbody.appendChild(row);
+			}
+		}
+
+	document.getElementById("panel").style.display =
+        viewMode === "cards" ? "grid" : "none";
+
+	document.getElementById("tableContainer").style.display =
+	viewMode === "table" ? "block" : "none";
+}
+
+
+/* =========================
+   PDF EXPORT (SIMPLE)
+   Uses browser print-to-PDF
+========================= */
+function exportPDF() {
+    const mode = document.getElementById("viewMode").value;
+
+    const printWindow = window.open('', '', 'width=800,height=600');
+
+    let html = `
+    <html>
+    <head>
+    <title>F-Stop Export</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .card { border: 1px solid #000; padding: 10px; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 8px; text-align: center; }
+        .base { font-weight: bold; }
+    </style>
+    </head>
+    <body>
+    <h2>F-Stop Exposure Sheet</h2>
+    `;
+
+    if (mode === "cards") {
+        lastData.forEach(d => {
+            html += `
+            <div class="card ${d.isBase ? 'base' : ''}">
+                Step ${d.step}<br>
+                Stops: ${d.isBase ? "BASE" : d.stops.toFixed(2)}<br>
+                Exposure: ${d.time.toFixed(1)}s<br>
+                Strip: ${d.strip.toFixed(1)}s
+            </div>`;
+        });
+    } else {
+        html += `<table><tr><th>Step</th><th>Stops</th><th>Exposure</th><th>Strip</th></tr>`;
+        lastData.forEach(d => {
+            html += `<tr>
+                <td>${d.step}</td>
+                <td>${d.isBase ? "BASE" : d.stops.toFixed(2)}</td>
+                <td>${d.time.toFixed(1)}</td>
+                <td>${d.strip.toFixed(1)}</td>
+            </tr>`;
+        });
+        html += `</table>`;
+    }
+
+    html += `
+    <script>
+        window.onload = function() { window.print(); }
+    <\/script>
+    </body></html>`;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+}
+</script>
+
+</body>
+</html>

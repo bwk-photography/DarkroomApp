@@ -1,0 +1,481 @@
+/*
+
+	F-Stop Darkroom Calculation Tool
+	Written by Benjamin Wallace King
+	April 23, 2026
+
+*/
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Darkroom Tool</title>
+
+<style>
+body {
+	font-family: Arial, sans-serif;
+	padding: 12px;
+	background: #111;
+	color: #eee;
+	font-size: 18px;
+	line-height: 1.4;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+h2 { margin-top: 0; }
+
+.control {
+	margin-bottom: 12px;
+	display: flex;
+	flex-direction: column;
+}
+
+label { margin-bottom: 6px; opacity: 0.9; }
+
+input, select, button {
+	padding: 10px;
+	font-size: 18px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+button {
+	margin: 8px 0;
+	background: #222;
+	color: #eee;
+	border: 1px solid #444;
+	cursor: pointer;
+}
+
+
+/* CARD VIEW */
+#panel {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.card {
+	border: 1px solid #444;
+	padding: 12px;
+	background: #1a1a1a;
+	cursor: pointer;
+}
+
+.card:hover { background: #222; }
+
+.base {
+	font-weight: bold;
+	color: #4fc3f7;
+}
+
+/* TABLE VIEW */
+.table-container {
+	display: none;
+	margin-top: 20px;
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+td, th {
+	border: 1px solid #444;
+	padding: 12px;
+	text-align: center;
+}
+
+th { background: #222; }
+
+tr:nth-child(even) { background: #1a1a1a; }
+
+.base-row {
+	font-weight: bold;
+	color: #4fc3f7;
+}
+
+@media (min-width: 768px) {
+	#panel {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	input, select { width: 300px; }
+	button { width: auto; }
+}
+
+.strip-visual {
+	margin-top: 8px;
+	height: 18px;
+	width: 100%;
+	background: #222;
+	display: flex;
+	overflow: hidden;
+	border: 1px solid #444;
+}
+
+.strip-segment {
+	height: 100%;
+	flex: 1;
+	background: #000;
+	opacity: 0;
+}
+
+.toggle {
+	display: flex;
+	border: 1px solid #444;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.toggle button {
+	flex: 1;
+	border: none;
+	background: #222;
+	color: #aaa;
+	cursor: pointer;
+}
+
+.toggle button.active {
+	background: #4fc3f7;
+	color: #000;
+	font-weight: bold;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<h2>F-Stop Darkroom Printing Tool</h2>
+
+
+<!-- BEGIN - UI Entry Fields -->
+
+<!--
+	UI Entry Field: Base Time
+	This is the number that all calculations will be based off of.
+	The calculations will be done above and below this number, putting this value as close to the middle as possible.
+	For now, limit to whole numbers between 1 and 10.
+-->
+<div class="control">
+	<label>Base Time (seconds)</label>
+	<input type="number" id="baseTime" value="10">
+</div>
+
+
+<!-- UI Entry Field: F-Stop Increment -->
+<!--
+	This is the value used to calculate F-stop differences from the base value.
+	Calculation is done in function calculate().
+		"const time = baseTime * Math.pow(2, stops);"
+		Fomula is: x=E6*2^1
+	
+-->
+<div class="control">
+	<label>F-Stop Increment</label>
+	<select id="increment">
+		<option value="0.1">0.1</option>
+		<option value="0.2">0.2</option>
+		<option value="0.3" selected>0.3</option>
+		<option value="0.5">0.5</option>
+		<option value="1">1</option>
+	</select>
+</div>
+
+
+<!-- UI Entry Field: Number of steps to calculate and display -->
+<div class="control">
+	<label>Steps</label>
+	<select id="steps">
+		<option>3</option>
+		<option>5</option>
+		<option selected>7</option>
+		<option>9</option>
+		<option>11</option>
+	</select>
+</div>
+
+<!-- UI Entry Field: Toggle between card view and table view -->
+<div class="control">
+    <label>Display Mode</label>
+    <div class="toggle">
+        <button id="cardBtn">Cards</button>
+        <button id="tableBtn" class="active">Table</button>
+    </div>
+</div>
+
+<!-- END - UI Entry Fields -->
+
+
+<!--<button onclick="calculate()">Generate</button>-->
+<button onclick="exportPDF()">Export PDF</button>
+
+
+<div id="panel"></div>
+
+<div class="table-container" id="tableContainer">
+    <table>
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<script>
+
+let lastData = [];
+let viewMode = "table";
+
+
+function setupAutoCalculate() {
+	const ids = [
+		"baseTime",
+		"increment",
+		"steps",
+		"viewMode",
+		"splitMode"
+	];
+
+	ids.forEach(id => {
+		const el = document.getElementById(id);
+		if (!el) return;
+
+		const trigger = () => calculate();
+
+		// works for sliders, inputs, selects
+		el.addEventListener("input", trigger);
+		el.addEventListener("change", trigger);
+	});
+
+	// special case: slider always needs input only
+	const slider = document.getElementById("splitBalance");
+	if (slider) {
+		slider.addEventListener("input", calculate);
+	}
+}	// end function setupAutoCalculate()
+
+
+function calculate() {
+
+    const baseTime = Math.round(parseFloat(document.getElementById("baseTime").value));
+    const increment = parseFloat(document.getElementById("increment").value);
+    const steps = parseInt(document.getElementById("steps").value);
+
+	// use global viewMode variable
+	//const viewMode = document.getElementById("viewMode").value;
+
+    document.getElementById("baseTime").value = baseTime;
+
+    const panel = document.getElementById("panel");
+    const tbody = document.getElementById("tableBody");
+    const tableHead = document.getElementById("tableHead");
+
+    panel.innerHTML = "";
+    tbody.innerHTML = "";
+    lastData = [];
+
+    const half = Math.floor(steps / 2);
+    let stepCount = 0;
+
+    let exposures = [];
+
+    // STEP 1: generate exposure list
+    for (let i = half; i >= -half; i--) {
+        const stops = i * increment;
+        const time = baseTime * Math.pow(2, stops);
+
+        exposures.push({ stepCount: stepCount + 1, stops, time });
+        stepCount++;
+    }
+
+    // STEP 2: sort for TRUE test strip logic (ascending exposure)
+    const sorted = [...exposures].sort((a,b) => a.time - b.time);
+
+    let prev = 0;
+
+    sorted.forEach((d, index) => {
+        d.stripStart = prev;
+        d.stripEnd = d.time;
+        d.stripIncrement = d.time - prev;
+        prev = d.time;
+    });
+
+    // STEP 3: restore original order for display
+    exposures.forEach(d => {
+        const match = sorted.find(s => s.stepCount === d.stepCount);
+        d.stripIncrement = match.stripIncrement;
+        d.stripStart = match.stripStart;
+        d.stripEnd = match.stripEnd;
+
+        lastData.push(d);
+    });
+
+    // HEADER
+    if (viewMode === "table") {
+        tableHead.innerHTML = `
+            <tr>
+                <th>Step</th>
+                <th>Stops</th>
+                <th>Strip Time</th>
+                <th>Total Exposure</th>
+            </tr>
+        `;
+    }
+
+    // OUTPUT
+    lastData.forEach(d => {
+
+        const isBase = Math.abs(d.time - baseTime) < 0.001;
+
+        // CARD
+        if (viewMode === "cards") {
+            const card = document.createElement("div");
+            card.className = "card";
+            if (isBase) card.classList.add("base");
+
+            card.innerHTML = `
+                <b>Step ${d.stepCount}</b><br>
+                Stops: ${isBase ? "BASE" : d.stops.toFixed(2)}<br>
+                Exposure: ${d.time.toFixed(1)}s<br>
+                Strip Time: +${d.stripIncrement.toFixed(1)}s<br>
+            `;
+
+            panel.appendChild(card);
+        }
+
+        // TABLE
+        if (viewMode === "table") {
+            const row = document.createElement("tr");
+            if (isBase) row.classList.add("base-row");
+
+            row.innerHTML = `
+                <td>${d.stepCount}</td>
+                <td>${isBase ? "BASE" : d.stops.toFixed(2)}</td>
+                <td>+${d.stripIncrement.toFixed(1)}</td>
+                <td>${d.time.toFixed(1)}</td>
+            `;
+
+            tbody.appendChild(row);
+        }
+    });
+
+    document.getElementById("panel").style.display =
+        viewMode === "cards" ? "grid" : "none";
+
+    document.getElementById("tableContainer").style.display =
+        viewMode === "table" ? "block" : "none";
+}
+
+
+function setActiveToggle(activeId) {
+	document.querySelectorAll(".toggle button").forEach(btn => {
+		btn.classList.remove("active");
+	});
+	document.getElementById(activeId).classList.add("active");
+}
+
+
+
+// ================= PDF =================
+
+function exportPDF() {
+
+	const mode = viewMode;
+
+	// prime the UI values to display in the export
+	const baseTime = document.getElementById("baseTime").value;
+	const increment = document.getElementById("increment").value;
+	const steps = document.getElementById("steps").value;
+
+	const win = window.open("", "", "width=800,height=600");
+
+	let html = `
+	<html>
+	<head>
+		<title>F-Stop Increments Export</title>
+		<style>
+			body { font-family: Arial; padding: 20px; }
+			.card { border: 1px solid #000; padding: 10px; margin: 10px 0; }
+			table { width: 100%; border-collapse: collapse; }
+			td, th { border: 1px solid #000; padding: 8px; }
+		</style>
+	</head>
+
+	<body>
+	<h2>F-Stop Test Strip Sheet</h2>
+
+	<div class="settings">
+		<b>Settings</b><br>
+		Base Time: ${baseTime}s<br>
+		F-Stop Increment: ${increment}<br>
+	</div>
+	`;
+
+	if (mode === "cards") {
+		lastData.forEach(d => {
+			html += `
+			<div class="card">
+			Step ${d.stepCount}<br>
+			Exposure: ${d.time.toFixed(1)}s<br>
+			Strip Add: +${d.stripIncrement.toFixed(1)}s<br>
+			Range: ${d.stripStart.toFixed(1)} → ${d.stripEnd.toFixed(1)}s
+			</div>`;
+		});
+	} else {
+		html += `<table>
+		<tr><th>Step</th><th>Strip Add</th><th>Exposure</th></tr>`;
+
+		lastData.forEach(d => {
+			html += `<tr>
+			<td>${d.stepCount}</td>
+			<td>+${d.stripIncrement.toFixed(1)}</td>
+			<td>${d.time.toFixed(1)}</td>
+			</tr>`;
+	});
+
+	html += `</table>`;
+	}
+
+	html += `
+	<script>
+		window.onload = () => window.print();
+	<\/script>
+	</body></html>`;
+
+	win.document.write(html);
+	win.document.close();
+
+}	// END exportPDF()
+
+
+window.onload = () => {
+	setupAutoCalculate();
+
+	document.getElementById("cardBtn").addEventListener("click", () => {
+		viewMode = "cards";
+		setActiveToggle("cardBtn");
+		calculate();
+	});
+
+	document.getElementById("tableBtn").addEventListener("click", () => {
+		viewMode = "table";
+		setActiveToggle("tableBtn");
+		calculate();
+	});
+
+	calculate();
+};
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Calculator</title>
+
+
+<style>
+    /* =========================
+       BASE (MOBILE FIRST)
+    ========================= */
+
+    body {
+        font-family: Arial, sans-serif;
+        padding: 12px;
+        background: #111;
+        color: #eee;
+        font-size: 18px;
+        line-height: 1.4;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    /* =========================
+       CONTROL GROUPS (FIXED LAYOUT)
+    ========================= */
+
+    .control {
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 6px;
+        opacity: 0.9;
+    }
+
+    input, select, button {
+        padding: 10px;
+        font-size: 18px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    button {
+        margin: 8px 0;
+        background: #222;
+        color: #eee;
+        border: 1px solid #444;
+        cursor: pointer;
+    }
+
+    button:active {
+        background: #333;
+    }
+
+    /* =========================
+       CARD VIEW (DARKROOM MODE)
+    ========================= */
+
+    #panel {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .card {
+        border: 1px solid #444;
+        padding: 12px;
+        background: #1a1a1a;
+        cursor: pointer;
+    }
+
+    .card:hover {
+        background: #222;
+    }
+
+    .card div {
+        display: block;
+        margin: 4px 0;
+    }
+
+    .selected {
+        outline: 2px solid #4fc3f7;
+        background: #263238 !important;
+    }
+
+    .base {
+        font-weight: bold;
+        color: #4fc3f7;
+        background: #222;
+    }
+
+    /* =========================
+       TABLE VIEW
+    ========================= */
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+        display: none;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid #444;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background: #222;
+    }
+
+    tr:nth-child(even) {
+        background: #1a1a1a;
+    }
+
+    .selected-row {
+        outline: 2px solid #4fc3f7;
+        background: #263238 !important;
+    }
+
+    .base-row {
+        font-weight: bold;
+        color: #4fc3f7;
+        background: #222;
+    }
+
+    /* =========================
+       DESKTOP OVERRIDES
+    ========================= */
+
+    @media (min-width: 768px) {
+        #panel {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        input, select {
+            width: 300px;
+        }
+
+        button {
+            width: auto;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<h2>F-Stop Exposure Calculator</h2>
+
+<label>Base Time (seconds):</label>
+<input type="number" id="baseTime" step="0.01" value="10">
+
+<br>
+
+<label>F-Stop Increment:</label>
+<select id="increment">
+    <option value="0.1">0.1</option>
+    <option value="0.2">0.2</option>
+    <option value="0.3" selected>0.3</option>
+    <option value="0.5">0.5</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+</select>
+
+<br>
+
+<label>Number of Steps:</label>
+<select id="steps">
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>6</option>
+    <option>7</option>
+    <option selected>8</option>
+    <option>9</option>
+    <option>10</option>
+    <option>11</option>
+</select>
+
+<br><br>
+
+<button onclick="calculate()">Calculate</button>
+
+<table id="results">
+	<thead>
+	    <tr>
+        	<th>Step</th>
+        	<th>Stops</th>
+        	<th>Test Strip (s)</th>
+	        <th>Exposure (s)</th>
+	    </tr>
+	</thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function calculate() {
+    const baseTime = parseFloat(document.getElementById('baseTime').value);
+    const increment = parseFloat(document.getElementById('increment').value);
+    const steps = parseInt(document.getElementById('steps').value);
+
+    const tbody = document.querySelector("#results tbody");
+    tbody.innerHTML = "";
+
+    const half = Math.floor(steps / 2);
+    let stripTime = 0;
+    let steps_curr = 0;
+
+    for (let i = half; i >= -half; i--) {
+	steps_curr++;
+
+        const stops = i * increment;
+        const time = baseTime * Math.pow(2, stops);
+
+	const stops_next = (i - 1) * increment;
+	const time_next = baseTime * Math.pow(2, stops_next);
+
+	// on the final step, show the total time of the last exposure
+	// for the rest, use the current exposure time minus the exposure time for the next step
+	if (steps_curr === steps) {
+		stripTime = time;
+	} else {
+	        stripTime = time-time_next;
+	}
+
+	const isBase = Math.abs(time - baseTime) < 0.0001;
+
+	const row = document.createElement("tr");
+
+
+	row.className = isBase ? "base-row" : "";
+
+	row.innerHTML = `
+		<td>${steps_curr}</td>
+		<td>${isBase ? "BASE" : stops.toFixed(2)}</td>
+		<td>${stripTime.toFixed(1)}</td>
+		<td>${time.toFixed(1)}</td>
+	`;
+
+
+	// TAP / CLICK TO SELECT
+	row.addEventListener("click", () => {
+		document.querySelectorAll("#results tbody tr").forEach(r => {
+			r.classList.remove("selected-row");
+		});
+		row.classList.add("selected-row");
+	});
+
+	tbody.appendChild(row);
+
+
+    }
+}
+</script>
+
+</body>
+</html>

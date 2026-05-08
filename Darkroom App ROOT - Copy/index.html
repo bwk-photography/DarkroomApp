@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>F-Stop Darkroom Tool</title>
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<h2>F-Stop Darkroom Printing Tool</h2>
+
+
+<!-- ========== CONTROLS BEGIN ========== -->
+
+<div class="control">
+	<label>Base Time (seconds)</label>
+	<input type="number" id="baseTime" value="10">
+</div>
+
+<div class="control">
+    <label>F-Stop Increment</label>
+    <select id="increment">
+        <option value="0.1">0.1</option>
+        <option value="0.2">0.2</option>
+        <option value="0.3" selected>0.3</option>
+        <option value="0.5">0.5</option>
+        <option value="1">1</option>
+    </select>
+</div>
+
+<div class="control">
+    <label>Steps</label>
+    <select id="steps">
+        <option selected>3</option>
+        <option>5</option>
+        <option>7</option>
+        <option>9</option>
+        <option>11</option>
+    </select>
+</div>
+
+
+<!-- <div class="control">
+    <label>Display Mode</label>
+    <select id="viewMode">
+        <option value="cards">Card View</option>
+        <option value="table">Table View</option>
+    </select>
+</div>
+ -->
+
+<!-- I want to have a toggle between "Cards" and "Table" with "Table" being defaulted on both phones and desktop -->
+<div class="control" id="viewMode">
+    <label>Display Mode</label>
+    <div class="toggle">
+        <button id="cardBtn">Cards</button>
+        <button id="tableBtn" class="active">Table</button>
+    </div>
+</div>
+
+<!-- ========== CONTROLS END ========== -->
+
+
+<!-- ========== ACTIONS BEGIN ========== -->
+
+<div class="actions">
+    <!-- create the "Export to PDF" button -->
+    <button id="exportBtn">Export PDF</button>
+</div>
+
+<!-- ========== ACTIONS END ========== -->
+
+
+<!-- CARD VIEW -->
+<div id="panel"></div>
+
+
+<!-- TABLE VIEW -->
+<div class="table-container" id="tableContainer">
+	<table>
+		<thead id="tableHead"></thead>
+		<tbody id="tableBody"></tbody>
+	</table>
+</div>
+
+
+<!-- MAIN APP ENTRY -->
+<script type="module" src="js/app.js"></script>
+
+
+</body>
+</html>
