@@ -122,7 +122,36 @@
 
 
 <!-- MAIN APP ENTRY -->
+<!-- ... body content above ... -->
+
+<!-- Firebase configuration and setup -->
+<script type="module">
+    import { initializeApp }   from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js)";
+    import { getFirestore }    from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js)";
+    import { getAuth }         from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js)";
+    import { getStorage }      from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js)";
+
+    // Your Firebase project configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBO70xsrYtKMyNVlIF37Up8383r-TdIq-s",
+        authDomain: "darkroom-companion-2da18.firebaseapp.com",
+        projectId: "darkroom-companion-2da18",
+        storageBucket: "darkroom-companion-2da18.firebasestorage.app",
+        messagingSenderId: "653269703444",
+        appId: "1:653269703444:web:b7a0cbebad5091c505c001",
+        measurementId: "G-3NC8EBQGDE"
+    };
+
+    // Initialize Firebase and expose handles globally
+    const app     = initializeApp(firebaseConfig);
+    window.db     = getFirestore(app);
+    window.auth   = getAuth(app);
+    window.storage = getStorage(app);
+</script>
+
+<!-- Load app scripts -->
 <script type="module" src="js/app.js"></script>
+<script type="module" src="js/printLog.js"></script>
 
 
 </body>
