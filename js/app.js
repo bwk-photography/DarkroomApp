@@ -6,6 +6,42 @@ import { exportPDF } from "./pdf.js";
 import { initPrintLog } from "./printLog.js";
 
 
+
+import {
+	getAuth,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signOut,
+	onAuthStateChanged
+} from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js)";
+
+const auth = window.auth;                    // the one set in index.html
+const provider = new GoogleAuthProvider();   // Google provider
+
+const loginBtn  = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userInfo  = document.getElementById("userInfo");
+
+// --- Click handlers ---
+loginBtn.addEventListener("click", () => signInWithPopup(auth, provider));
+logoutBtn.addEventListener("click", () => signOut(auth));
+
+// --- Monitor auth state ---
+onAuthStateChanged(auth, user => {
+	if (user) {
+		// signed in
+		loginBtn.style.display  = "none";
+		logoutBtn.style.display = "inline-block";
+		userInfo.textContent    = `Signed in as ${user.displayName || user.email}`;
+	} else {
+		// signed out
+		loginBtn.style.display  = "inline-block";
+		logoutBtn.style.display = "none";
+		userInfo.textContent    = "";
+	}
+});
+
+
 let viewMode = "table";
 
 function update() {
