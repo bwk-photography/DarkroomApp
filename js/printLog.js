@@ -8,7 +8,7 @@ import {
   deleteDoc,
   doc,
   updateDoc
-} from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js)";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const db = window.db;     // created in firebase setup script
 const auth = window.auth; // firebase auth instance
