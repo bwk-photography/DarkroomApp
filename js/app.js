@@ -13,7 +13,7 @@ import {
 	signInWithPopup,
 	signOut,
 	onAuthStateChanged
-} from "[gstatic.com](https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js)";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
 const auth = window.auth;                    // the one set in index.html
 const provider = new GoogleAuthProvider();   // Google provider
