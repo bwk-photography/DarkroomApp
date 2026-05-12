@@ -10,9 +10,18 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-const db = window.db;     // created in firebase setup script
-const auth = window.auth; // firebase auth instance
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+
+const db = window.db;          // from firebase setup script
+const auth = window.auth;      // firebase auth instance
+const storage = window.storage; // firebase storage
 let currentUser = null;
+
 
 // --- Initialize print log ---
 export function initPrintLog() {
@@ -30,29 +39,56 @@ export function initPrintLog() {
 
   // --- Save / Update entry ---
   saveBtn.addEventListener("click", async () => {
-    const title = document.getElementById("logTitle").value.trim();
-    const notes = document.getElementById("logNotes").value.trim();
-    if (!title && !notes) return;
-    if (!currentUser) return alert("Please sign in.");
+      const title = document.getElementById("logTitle").value.trim();
+      const notes = document.getElementById("logNotes").value.trim();
+      const paperType = document.getElementById("paperType")?.value.trim() || "";
+      const filmRef   = document.getElementById("filmRef")?.value.trim() || "";
 
-    const entry = {
-      uid: currentUser.uid,
-      title,
-      notes,
-      date: new Date().toLocaleString()
-    };
+      if (!title && !notes) return;
+      if (!currentUser) return alert("Please sign in.");
 
-    await addDoc(collection(db, "printLogs"), entry);
+      await saveLog(title, notes, paperType, filmRef);
+      // Reset form
+      document.getElementById("logTitle").value = "";
+      document.getElementById("logNotes").value = "";
 
-    document.getElementById("logTitle").value = "";
-    document.getElementById("logNotes").value = "";
+      if (document.getElementById("paperType")) document.getElementById("paperType").value = "";
+      if (document.getElementById("filmRef")) document.getElementById("filmRef").value = "";
 
-    renderLogs();
-  });
+      const photoInput = document.getElementById("logPhoto");
+      if (photoInput) photoInput.value = "";
+
+      const preview = document.getElementById("photoPreview");
+      if (preview) preview.style.display = "none";
+
+      renderLogs();
+    });
 
   // Initial render
   renderLogs();
 }
+
+// --- New helper to upload photo + save record in Firestore ---
+async function saveLog(title, notes, paperType, filmRef) {
+  let photoURL = "";
+  const fileInput = document.getElementById("logPhoto");
+  const file = fileInput ? fileInput.files[0] : null;
+  if (file) {
+    const fileRef = ref(storage, `printPhotos/${currentUser.uid}/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    photoURL = await getDownloadURL(fileRef);
+  }
+  await addDoc(collection(db, "printLogs"), {
+    uid: currentUser.uid,
+    title,
+    notes,
+    paperType,
+    filmRef,
+    date: new Date().toLocaleString(),
+    photoURL
+  });
+}
+
 
 // --- Render user’s logs from Firestore ---
 async function renderLogs() {
