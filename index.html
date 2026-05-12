@@ -116,6 +116,19 @@
             <label>Paper / Filter / Notes</label>
             <textarea id="logNotes" placeholder="Ilford MGIV, filter 2.5, 16 s base, dodged highlights..."></textarea>
         </div>
+        <div class="control">
+            <label>Paper Type</label>
+            <input id="paperType" type="text" placeholder="Ilford MG RC, Fiber, etc.">
+        </div>
+            <div class="control">
+            <label>Negative Reference</label>
+            <input id="filmRef" type="text" placeholder="HP5+ Roll #3 Frame 12">
+        </div>
+        <div class="control">
+            <label>Attach Photo</label>
+            <input type="file" id="logPhoto" accept="image/*">
+            <img id="photoPreview" style="max-width:200px; margin-top:10px; display:none;">
+        </div>
         <button id="saveLogBtn">Save Entry</button>
         <h3>Saved Prints</h3>
         <ul id="logList"></ul>
