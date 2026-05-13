@@ -14,7 +14,7 @@ import {
   ref,
   uploadBytes,
   getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
 
 const db = window.db;          // from firebase setup script
