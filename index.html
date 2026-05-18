@@ -15,26 +15,18 @@
 
 <header class="ui-appbar">
 
+    <!-- LEFT SIDE -->
     <div class="ui-appbar-left">
+
+        <!-- MOBILE MENU BUTTON -->
+        <button id="menuToggle" class="ui-btn ui-menu-btn">
+            ☰
+        </button>
+
         <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
-
-        <nav class="ui-nav">
-            <button id="showCalcBtn" class="ui-btn active">F‑Stop Calculator</button>
-            <button id="showLogBtn" class="ui-btn">Print Log</button>
-
-            <div class="ui-dropdown">
-                <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
-                    Print Session ▾
-                </button>
-
-                <div id="PrintSessionDiv" class="ui-dropdown-menu">
-                    <a href="#newSession">New Session</a>
-                    <a href="#activeSession">Active Session</a>
-                </div>
-            </div>
-        </nav>
     </div>
 
+    <!-- RIGHT SIDE -->
     <div class="ui-appbar-right">
         <button id="loginBtn" class="ui-btn">Sign in with Google</button>
         <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
@@ -42,6 +34,24 @@
     </div>
 
 </header>
+
+<!-- MOBILE NAV (hidden by default) -->
+<nav id="mobileNav" class="ui-mobile-nav">
+    <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
+    <button id="showLogBtn_m" class="ui-btn">Print Log</button>
+
+    <div class="ui-dropdown">
+        <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
+            Print Session ▾
+        </button>
+
+        <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
+            <a href="#newSession">New Session</a>
+            <a href="#activeSession">Active Session</a>
+        </div>
+    </div>
+</nav>
+
 
 
 <!-- ========== F-STOP CALCULATOR SECTION BEGIN ========== -->
@@ -176,6 +186,36 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", () => {
         menu.classList.remove("show");
     });
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* MOBILE MENU TOGGLE */
+    const menuBtn = document.getElementById("menuToggle");
+    const mobileNav = document.getElementById("mobileNav");
+
+    menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        mobileNav.style.display =
+            mobileNav.style.display === "flex" ? "none" : "flex";
+    });
+
+    document.addEventListener("click", () => {
+        mobileNav.style.display = "none";
+    });
+
+    /* MOBILE DROPDOWN */
+    const btn_m = document.getElementById("printSessionBtn_m");
+    const menu_m = document.getElementById("PrintSessionDiv_m");
+
+    btn_m.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu_m.classList.toggle("show");
+    });
+
 });
 </script>
 
