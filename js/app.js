@@ -1,100 +1,102 @@
-import { state } from "./state.js";
-import { readInputs, setupEvents, setActiveToggle } from "./ui.js";
-import { generateSteps } from "./calculator.js";
-import { render } from "./renderer.js";
-import { exportPDF } from "./pdf.js";
-import { initPrintLog } from "./printLog.js";
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ============================================================
+       VIEW SWITCHING (Calculator <-> Print Log)
+    ============================================================ */
+
+    const calcView = document.getElementById("calcView");
+    const logView  = document.getElementById("logView");
+
+    // Desktop buttons
+    const showCalcBtn = document.getElementById("showCalcBtn");
+    const showLogBtn  = document.getElementById("showLogBtn");
+
+    // Mobile buttons
+    const showCalcBtn_m = document.getElementById("showCalcBtn_m");
+    const showLogBtn_m  = document.getElementById("showLogBtn_m");
+
+    function showCalculator() {
+        calcView.style.display = "block";
+        logView.style.display  = "none";
+
+        if (showCalcBtn) showCalcBtn.classList.add("active");
+        if (showLogBtn)  showLogBtn.classList.remove("active");
+
+        if (showCalcBtn_m) showCalcBtn_m.classList.add("active");
+        if (showLogBtn_m)  showLogBtn_m.classList.remove("active");
+    }
+
+    function showLog() {
+        calcView.style.display = "none";
+        logView.style.display  = "block";
+
+        if (showCalcBtn) showCalcBtn.classList.remove("active");
+        if (showLogBtn)  showLogBtn.classList.add("active");
+
+        if (showCalcBtn_m) showCalcBtn_m.classList.remove("active");
+        if (showLogBtn_m)  showLogBtn_m.classList.add("active");
+    }
+
+    if (showCalcBtn)   showCalcBtn.addEventListener("click", showCalculator);
+    if (showLogBtn)    showLogBtn.addEventListener("click", showLog);
+    if (showCalcBtn_m) showCalcBtn_m.addEventListener("click", showCalculator);
+    if (showLogBtn_m)  showLogBtn_m.addEventListener("click", showLog);
 
 
+    /* ============================================================
+       DESKTOP DROPDOWN
+    ============================================================ */
 
-import {
-	getAuth,
-	GoogleAuthProvider,
-	signInWithPopup,
-	signOut,
-	onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    const printBtn = document.getElementById("printSessionBtn");
+    const printMenu = document.getElementById("PrintSessionDiv");
 
-const auth = window.auth;                    // the one set in index.html
-const provider = new GoogleAuthProvider();   // Google provider
+    if (printBtn && printMenu) {
+        printBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            printMenu.classList.toggle("show");
+        });
+    }
 
-const loginBtn  = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const userInfo  = document.getElementById("userInfo");
 
-// --- Click handlers ---
-loginBtn.addEventListener("click", () => signInWithPopup(auth, provider));
-logoutBtn.addEventListener("click", () => signOut(auth));
+    /* ============================================================
+       MOBILE DROPDOWN
+    ============================================================ */
 
-// --- Monitor auth state ---
-onAuthStateChanged(auth, user => {
-	if (user) {
-		// signed in
-		loginBtn.style.display  = "none";
-		logoutBtn.style.display = "inline-block";
-		userInfo.textContent    = `Signed in as ${user.displayName || user.email}`;
-	} else {
-		// signed out
-		loginBtn.style.display  = "inline-block";
-		logoutBtn.style.display = "none";
-		userInfo.textContent    = "";
-	}
+    const printBtn_m = document.getElementById("printSessionBtn_m");
+    const printMenu_m = document.getElementById("PrintSessionDiv_m");
+
+    if (printBtn_m && printMenu_m) {
+        printBtn_m.addEventListener("click", (e) => {
+            e.stopPropagation();
+            printMenu_m.classList.toggle("show");
+        });
+    }
+
+
+    /* ============================================================
+       MOBILE MENU TOGGLE (Hamburger)
+    ============================================================ */
+
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileNav  = document.getElementById("mobileNav");
+
+    if (menuToggle && mobileNav) {
+        menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            mobileNav.style.display =
+                mobileNav.style.display === "flex" ? "none" : "flex";
+        });
+    }
+
+
+    /* ============================================================
+       CLOSE ALL MENUS WHEN CLICKING OUTSIDE
+    ============================================================ */
+
+    document.addEventListener("click", () => {
+        if (printMenu)    printMenu.classList.remove("show");
+        if (printMenu_m)  printMenu_m.classList.remove("show");
+        if (mobileNav)    mobileNav.style.display = "none";
+    });
+
 });
-
-
-let viewMode = "table";
-
-function update() {
-	readInputs();
-	state.settings.viewMode = viewMode;
-	state.results = generateSteps(state.settings);
-	render(state.results, state.settings);
-}
-
-window.onload = () => {
-	setupEvents(update);
-	update();
-	initPrintLog();
-
-	// --- Toggle buttons ---
-	document.getElementById("cardBtn").addEventListener("click", () => {
-		viewMode = "cards";
-		setActiveToggle("cardBtn");
-		update();
-	});
-
-	document.getElementById("tableBtn").addEventListener("click", () => {
-		viewMode = "table";
-		setActiveToggle("tableBtn");
-		update();
-	});
-
-	// --- Export ---
-	document.getElementById("exportBtn").addEventListener("click", exportPDF);
-
-
-	// --- View toggling ---
-	const calcView = document.getElementById("calcView");
-	const logView  = document.getElementById("logView");
-
-	const showCalcBtn = document.getElementById("showCalcBtn");
-	const showLogBtn  = document.getElementById("showLogBtn");
-
-	function showView(view) {
-		// Show or hide the sections
-		calcView.style.display = view === "calc" ? "block" : "none";
-		logView.style.display  = view === "log"  ? "block" : "none";
-
-		// Update button highlighting
-		showCalcBtn.classList.toggle("active", view === "calc");
-		showLogBtn.classList.toggle("active",  view === "log");
-	}
-
-	// Hook up the buttons
-	showCalcBtn.addEventListener("click", () => showView("calc"));
-	showLogBtn.addEventListener("click",  () => showView("log"));
-
-	// Default to calculator view on page load
-	showView("calc");
-
-};
