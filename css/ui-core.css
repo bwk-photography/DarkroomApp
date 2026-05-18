@@ -135,13 +135,14 @@
 .ui-appbar-left {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .ui-appbar-title {
   font-size: var(--font-large);
   margin: 0;
   color: var(--text);
+  white-space: nowrap;
 }
 
 .ui-appbar-right {
