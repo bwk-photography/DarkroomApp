@@ -18,8 +18,14 @@
 
     <!-- MOBILE MENU BUTTON -->
     <button id="menuToggle" class="ui-btn ui-menu-btn">
-      ☰
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
     </button>
+
 
     <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
 
@@ -30,8 +36,13 @@
 
       <div class="ui-dropdown">
         <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
-          Print Session ▾
+        Print Session
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
         </button>
+
 
         <div id="PrintSessionDiv" class="ui-dropdown-menu">
           <a href="#newSession">New Session</a>
@@ -52,19 +63,23 @@
 
 <!-- MOBILE NAV (separate) -->
 <nav id="mobileNav" class="ui-mobile-nav">
-  <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
-  <button id="showLogBtn_m" class="ui-btn">Print Log</button>
+    <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
+    <button id="showLogBtn_m" class="ui-btn">Print Log</button>
 
-  <div class="ui-dropdown">
-    <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
-      Print Session ▾
-    </button>
+    <div class="ui-dropdown">
+        <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
+        Print Session
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        </button>
 
-    <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
-      <a href="#newSession">New Session</a>
-      <a href="#activeSession">Active Session</a>
+        <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
+            <a href="#newSession">New Session</a>
+            <a href="#activeSession">Active Session</a>
+        </div>
     </div>
-  </div>
 </nav>
 
 

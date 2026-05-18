@@ -1,25 +1,25 @@
 :root {
-  /* Colors */
-  --bg: #111;
-  --bg-alt: #1a1a1a;
-  --surface: #222;
-  --surface-alt: #2a2a2a;
-  --border: #444;
-  --text: #eee;
-  --text-dim: #aaa;
-  --accent: #4fc3f7;
+    /* Colors */
+    --bg: #111;
+    --bg-alt: #1a1a1a;
+    --surface: #222;
+    --surface-alt: #2a2a2a;
+    --border: #444;
+    --text: #eee;
+    --text-dim: #aaa;
+    --accent: #4fc3f7;
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
 
-  /* Typography */
-  --font-base: 18px;
-  --font-small: 15px;
-  --font-large: 22px;
+    /* Typography */
+    --font-base: 18px;
+    --font-small: 15px;
+    --font-large: 22px;
 }
 
 
@@ -27,42 +27,48 @@
 
 /* Buttons */
 .ui-btn {
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  cursor: pointer;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* Icon alignment */
+.ui-btn svg {
+  margin-right: 6px;
+  stroke: var(--text);
 }
 
 .ui-btn:hover {
-  background: var(--surface-alt);
+    background: var(--surface-alt);
 }
 
 .ui-btn.active {
-  background: var(--accent);
-  color: #000;
+    background: var(--accent);
+    color: #000;
 }
 
 .ui-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 
 /* Inputs */
 .ui-input, .ui-select {
-  padding: var(--space-3);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  width: 100%;
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 100%;
 }
 
 
 /* Labels */
 .ui-label {
-  margin-bottom: var(--space-2);
-  color: var(--text-dim);
+    margin-bottom: var(--space-2);
+    color: var(--text-dim);
 }
 
 
@@ -71,48 +77,56 @@
 
 /* Molecules - BEGIN */
 
+
 /* Dropdowns */
 .ui-dropdown { position: relative; }
 
 .ui-dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  flex-direction: column;
-  z-index: 1000;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    flex-direction: column;
+    z-index: 1000;
+}
+
+/* Dropdown button layout */
+.ui-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .ui-dropdown-menu.show {
-  display: flex;
+    display: flex;
 }
 
 .ui-dropdown-menu a {
-  padding: var(--space-3) var(--space-4);
-  color: var(--text);
-  text-decoration: none;
+    padding: var(--space-3) var(--space-4);
+    color: var(--text);
+    text-decoration: none;
 }
 
 .ui-dropdown-menu a:hover {
-  background: var(--surface);
+    background: var(--surface);
 }
 
 
 /* Control Row */
 .ui-control {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--space-3);
 }
 
 
 /* Card */
 .ui-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: var(--space-3);
 }
 
 
@@ -123,45 +137,46 @@
 
 /* App Bar */
 .ui-appbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-3) var(--space-4);
-  margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    box-shadow: 0 0 12px rgba(79, 195, 247, 0.15);
 }
 
 .ui-appbar-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
 }
 
 .ui-appbar-title {
-  font-size: var(--font-large);
-  margin: 0;
-  color: var(--text);
-  white-space: nowrap;
+    font-size: var(--font-large);
+    margin: 0;
+    color: var(--text);
+    white-space: nowrap;
 }
 
 .ui-appbar-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
 .ui-userinfo {
-  opacity: 0.8;
-  font-size: var(--font-small);
+    opacity: 0.8;
+    font-size: var(--font-small);
 }
 
 /* Nav Bar */
 .ui-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
 }
 
 
@@ -170,44 +185,49 @@
 /* ========================= */
 
 .ui-menu-btn {
-  display: none; /* hidden on desktop */
-  font-size: 24px;
-  padding: var(--space-2) var(--space-3);
+    display: none; /* hidden on desktop */
+    font-size: 24px;
+    padding: var(--space-2) var(--space-3);
 }
 
 .ui-mobile-nav {
-  display: none;
-  flex-direction: column;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-3);
-  gap: var(--space-2);
+    display: none;
+    flex-direction: column;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-3);
+    gap: var(--space-2);
 }
+
+/* Hamburger button icon */
+.ui-menu-btn svg {
+  stroke: var(--text);
+}
+
 
 /* MOBILE BREAKPOINT */
 @media (max-width: 700px) {
 
-  /* Show menu button */
-  .ui-menu-btn {
-    display: block;
-  }
+    /* Show menu button */
+    .ui-menu-btn {
+        display: block;
+    }
 
-  /* Hide desktop nav */
-  .ui-nav {
-    display: none;
-  }
+    /* Hide desktop nav */
+    .ui-nav {
+        display: none;
+    }
 
-  /* App Bar spacing */
-  .ui-appbar {
-    padding: var(--space-2) var(--space-3);
-  }
+    /* App Bar spacing */
+    .ui-appbar {
+        padding: var(--space-2) var(--space-3);
+        box-shadow: 0 0 12px rgba(79, 195, 247, 0.15);
+    }
 
-  .ui-appbar-title {
-    font-size: var(--font-base);
-  }
+    .ui-appbar-title {
+        font-size: var(--font-base);
+    }
 }
-
-
 
 /* Organisms - END */
 
