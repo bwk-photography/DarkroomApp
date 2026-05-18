@@ -31,11 +31,18 @@ label {
 	opacity: 0.9;
 }
 
-input, select, button {
-	padding: 10px;
-	font-size: 18px;
-	width: 100%;
-	box-sizing: border-box;
+input, select {
+    padding: 10px;
+    font-size: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px;
+    font-size: 18px;
+    width: auto;
+    box-sizing: border-box;
 }
 
 /* ========== CONTROLS END ========== */
@@ -99,13 +106,13 @@ button:active {
 
 /* Menu hidden by default */
 .dropdown-menu {
+    display: none;
     position: absolute;
     top: 110%;
     left: 0;
     background: #2a2a2a;
     border: 1px solid #444;
     min-width: 180px;
-    display: flex;
     flex-direction: column;
     opacity: 0;
     transform: translateY(-6px);
@@ -116,6 +123,7 @@ button:active {
 
 /* Menu visible */
 .dropdown-menu.show {
+    display: flex;
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
