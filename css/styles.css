@@ -47,6 +47,7 @@ input, select, button {
 	display: flex;
 	gap: 8px;
 	margin-bottom: 20px;
+	position:relative;
 }
 
 .nav-toggle button.active {
@@ -83,17 +84,54 @@ button:active {
 }
 
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #2a2a2a;
-  min-width: 160px;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+/* Dropdown container */
+
+.dropdown {
+    position: relative;
 }
 
+/* Button styling (inherits your theme) */
+.dropdown-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+/* Menu hidden by default */
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 10;
+}
+
+/* Menu visible */
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Menu items */
+.dropdown-menu a {
+    padding: 10px 14px;
+    color: #eee;
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+}
+
+.dropdown-menu a:hover {
+    background: #3a3a3a;
+}
 
 /* ========== BUTTONS END ========== */
 

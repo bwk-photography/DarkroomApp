@@ -15,10 +15,17 @@
 <h2>BWK Darkroom Tools</h2>
 
 <div class="nav-toggle">
+
     <button id="showCalcBtn" class="active">F‑Stop Calculator</button>
     <button id="showLogBtn">Print Log</button>
-    <button onclick="buttonContent('PrintSessionDiv')" id="printSessionBtn">Print Session</button>
-        <div id="PrintSessionDiv" class="dropdown-content">
+
+    <div class="'dropdown">
+
+        <button id="printSessionBtn">
+            Print Session ▾
+        </button>
+
+        <div id="PrintSessionDiv" class="dropdown-menu">
             <a href="#newSession">New Session</a>
             <a href="#activeSession">Active Session</a>
         </div>
@@ -148,11 +155,23 @@
 <!-- ... body content above ... -->
 
 <script>
-    /* On button click, toggle between hiding and showing the dropdown content */
-    function buttonContent(className) {
-        document.getElementById(className).classList.toggle("show");
-    }
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btn = document.getElementById("printSessionBtn");
+    const menu = document.getElementById("PrintSessionDiv");
+
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("show");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", () => {
+        menu.classList.remove("show");
+    });
+});
 </script>
+
 
 <!-- Firebase configuration and setup -->
 <script type="module">
