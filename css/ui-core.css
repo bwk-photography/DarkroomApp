@@ -27,6 +27,9 @@
 
 /* Buttons */
 .ui-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     padding: var(--space-3) var(--space-4);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -176,7 +179,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    margin-bottom: var(--space-4);
 }
 
 
