@@ -14,52 +14,68 @@
 
 <header class="ui-appbar">
 
-  <div class="ui-appbar-left">
+    <div class="ui-appbar-left">
 
-    <!-- MOBILE MENU BUTTON -->
-    <button id="menuToggle" class="ui-btn ui-menu-btn">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-    </button>
-
-
-    <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
-
-    <!-- DESKTOP NAV -->
-    <nav class="ui-nav">
-      <button id="showCalcBtn" class="ui-btn active">F‑Stop Calculator</button>
-      <button id="showLogBtn" class="ui-btn">Print Log</button>
-
-      <div class="ui-dropdown">
-        <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
-        Print Session
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        <!-- MOBILE MENU BUTTON -->
+        <button id="menuToggle" class="ui-btn ui-menu-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
         </button>
 
 
-        <div id="PrintSessionDiv" class="ui-dropdown-menu">
-          <a href="#newSession">New Session</a>
-          <a href="#activeSession">Active Session</a>
-        </div>
-      </div>
-    </nav>
+        <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
 
-  </div>
+        <!-- DESKTOP NAV -->
+        <nav class="ui-nav">
+            <button id="showCalcBtn" class="ui-btn active">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="6" x2="12" y2="12"></line>
+                    <line x1="12" y1="12" x2="16" y2="14"></line>
+                </svg>
+                F‑Stop Calculator
+            </button>
 
-  <div class="ui-appbar-right">
-    <button id="loginBtn" class="ui-btn">Sign in with Google</button>
-    <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
-    <span id="userInfo" class="ui-userinfo"></span>
-  </div>
+            <button id="showLogBtn" class="ui-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16v12H4z"></path>
+                    <path d="M8 16h8v4H8z"></path>
+                </svg>
+                Print Log
+            </button>
+
+            <div class="ui-dropdown">
+                <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Print Session
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+
+                <div id="PrintSessionDiv" class="ui-dropdown-menu">
+                    <a href="#newSession">New Session</a>
+                    <a href="#activeSession">Active Session</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="ui-appbar-right">
+        <button id="loginBtn" class="ui-btn">Sign in with Google</button>
+        <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
+        <span id="userInfo" class="ui-userinfo"></span>
+    </div>
 
 </header>
+
 
 <!-- MOBILE NAV (separate) -->
 <nav id="mobileNav" class="ui-mobile-nav">
@@ -199,54 +215,6 @@
 
 <!-- MAIN APP ENTRY -->
 <!-- ... body content above ... -->
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    const btn = document.getElementById("printSessionBtn");
-    const menu = document.getElementById("PrintSessionDiv");
-
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        menu.classList.toggle("show");
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", () => {
-        menu.classList.remove("show");
-    });
-});
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    /* MOBILE MENU TOGGLE */
-    const menuBtn = document.getElementById("menuToggle");
-    const mobileNav = document.getElementById("mobileNav");
-
-    menuBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        mobileNav.style.display =
-            mobileNav.style.display === "flex" ? "none" : "flex";
-    });
-
-    document.addEventListener("click", () => {
-        mobileNav.style.display = "none";
-    });
-
-    /* MOBILE DROPDOWN */
-    const btn_m = document.getElementById("printSessionBtn_m");
-    const menu_m = document.getElementById("PrintSessionDiv_m");
-
-    btn_m.addEventListener("click", (e) => {
-        e.stopPropagation();
-        menu_m.classList.toggle("show");
-    });
-
-});
-</script>
 
 
 <!-- Firebase configuration and setup -->
