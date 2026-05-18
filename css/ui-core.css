@@ -77,9 +77,12 @@
 .ui-dropdown-menu {
   display: none;
   position: absolute;
+  top: 100%;
+  left: 0;
   background: var(--surface-alt);
   border: 1px solid var(--border);
   flex-direction: column;
+  z-index: 1000;
 }
 
 .ui-dropdown-menu.show {
