@@ -79,16 +79,35 @@
 
 <!-- MOBILE NAV (separate) -->
 <nav id="mobileNav" class="ui-mobile-nav">
-    <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
-    <button id="showLogBtn_m" class="ui-btn">Print Log</button>
 
+    <button id="showCalcBtn_m" class="ui-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="6" x2="12" y2="12"></line>
+            <line x1="12" y1="12" x2="16" y2="14"></line>
+        </svg>
+        F‑Stop Calculator
+    </button>
+
+    <button id="showLogBtn_m" class="ui-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v12H4z"></path>
+            <path d="M8 16h8v4H8z"></path>
+        </svg>
+        Print Log
+    </button>
+
+    
     <div class="ui-dropdown">
         <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
-        Print Session
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Print Session
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
         </button>
 
         <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
