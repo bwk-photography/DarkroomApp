@@ -65,6 +65,7 @@ input, select, button {
 	margin-top: 10px;
 }
 
+
 button {
 	margin: 6px 0;
 	background: #222;
@@ -80,6 +81,19 @@ button:hover {
 button:active {
 	background: #333;
 }
+
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #2a2a2a;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+
 
 /* ========== BUTTONS END ========== */
 
