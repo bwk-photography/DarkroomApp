@@ -15,42 +15,59 @@
 
 <header class="ui-appbar">
 
-    <!-- LEFT SIDE -->
-    <div class="ui-appbar-left">
+  <div class="ui-appbar-left">
 
-        <!-- MOBILE MENU BUTTON -->
-        <button id="menuToggle" class="ui-btn ui-menu-btn">
-            ☰
+    <!-- MOBILE MENU BUTTON -->
+    <button id="menuToggle" class="ui-btn ui-menu-btn">
+      ☰
+    </button>
+
+    <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
+
+    <!-- DESKTOP NAV -->
+    <nav class="ui-nav">
+      <button id="showCalcBtn" class="ui-btn active">F‑Stop Calculator</button>
+      <button id="showLogBtn" class="ui-btn">Print Log</button>
+
+      <div class="ui-dropdown">
+        <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
+          Print Session ▾
         </button>
 
-        <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
-    </div>
+        <div id="PrintSessionDiv" class="ui-dropdown-menu">
+          <a href="#newSession">New Session</a>
+          <a href="#activeSession">Active Session</a>
+        </div>
+      </div>
+    </nav>
 
-    <!-- RIGHT SIDE -->
-    <div class="ui-appbar-right">
-        <button id="loginBtn" class="ui-btn">Sign in with Google</button>
-        <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
-        <span id="userInfo" class="ui-userinfo"></span>
-    </div>
+  </div>
+
+  <div class="ui-appbar-right">
+    <button id="loginBtn" class="ui-btn">Sign in with Google</button>
+    <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
+    <span id="userInfo" class="ui-userinfo"></span>
+  </div>
 
 </header>
 
-<!-- MOBILE NAV (hidden by default) -->
+<!-- MOBILE NAV (separate) -->
 <nav id="mobileNav" class="ui-mobile-nav">
-    <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
-    <button id="showLogBtn_m" class="ui-btn">Print Log</button>
+  <button id="showCalcBtn_m" class="ui-btn">F‑Stop Calculator</button>
+  <button id="showLogBtn_m" class="ui-btn">Print Log</button>
 
-    <div class="ui-dropdown">
-        <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
-            Print Session ▾
-        </button>
+  <div class="ui-dropdown">
+    <button id="printSessionBtn_m" class="ui-btn ui-dropdown-btn">
+      Print Session ▾
+    </button>
 
-        <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
-            <a href="#newSession">New Session</a>
-            <a href="#activeSession">Active Session</a>
-        </div>
+    <div id="PrintSessionDiv_m" class="ui-dropdown-menu">
+      <a href="#newSession">New Session</a>
+      <a href="#activeSession">Active Session</a>
     </div>
+  </div>
 </nav>
+
 
 
 
