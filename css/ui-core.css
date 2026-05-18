@@ -1,0 +1,164 @@
+:root {
+  /* Colors */
+  --bg: #111;
+  --bg-alt: #1a1a1a;
+  --surface: #222;
+  --surface-alt: #2a2a2a;
+  --border: #444;
+  --text: #eee;
+  --text-dim: #aaa;
+  --accent: #4fc3f7;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+
+  /* Typography */
+  --font-base: 18px;
+  --font-small: 15px;
+  --font-large: 22px;
+}
+
+
+/* Atoms - BEGIN */
+
+/* Buttons */
+.ui-btn {
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.ui-btn:hover {
+  background: var(--surface-alt);
+}
+
+.ui-btn.active {
+  background: var(--accent);
+  color: #000;
+}
+
+.ui-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* Inputs */
+.ui-input, .ui-select {
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 100%;
+}
+
+
+/* Labels */
+.ui-label {
+  margin-bottom: var(--space-2);
+  color: var(--text-dim);
+}
+
+
+/* Atoms - END */
+
+
+/* Molecules - BEGIN */
+
+/* Dropdowns */
+.ui-dropdown { position: relative; }
+
+.ui-dropdown-menu {
+  display: none;
+  position: absolute;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  flex-direction: column;
+}
+
+.ui-dropdown-menu.show {
+  display: flex;
+}
+
+.ui-dropdown-menu a {
+  padding: var(--space-3) var(--space-4);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.ui-dropdown-menu a:hover {
+  background: var(--surface);
+}
+
+
+/* Control Row */
+.ui-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-3);
+}
+
+
+/* Card */
+.ui-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: var(--space-3);
+}
+
+
+/* Molecules - END */
+
+
+/* Organisms - BEGIN */
+
+/* App Bar */
+.ui-appbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.ui-appbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ui-appbar-title {
+  font-size: var(--font-large);
+  margin: 0;
+  color: var(--text);
+}
+
+.ui-appbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ui-userinfo {
+  opacity: 0.8;
+  font-size: var(--font-small);
+}
+
+/* Nav Bar */
+.ui-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+/* Organisms - END */
+

@@ -12,31 +12,39 @@
 <body>
 
 
-<h2>BWK Darkroom Tools</h2>
+<header class="ui-appbar">
 
-<div class="nav-toggle">
+  <div class="ui-appbar-left">
+    <h1 class="ui-appbar-title">BWK Darkroom Tools</h1>
 
-    <button id="showCalcBtn" class="active">F‑Stop Calculator</button>
-    <button id="showLogBtn">Print Log</button>
+    <nav class="ui-nav">
+      <button id="showCalcBtn" class="ui-btn active">F‑Stop Calculator</button>
+      <button id="showLogBtn" class="ui-btn">Print Log</button>
 
-    <div class="dropdown">
-
-        <button id="printSessionBtn" class="dropdown-btn">
-            Print Session ▾
+      <div class="ui-dropdown">
+        <button id="printSessionBtn" class="ui-btn ui-dropdown-btn">
+          Print Session ▾
         </button>
 
-        <div id="PrintSessionDiv" class="dropdown-menu">
-            <a href="#newSession">New Session</a>
-            <a href="#activeSession">Active Session</a>
+        <div id="PrintSessionDiv" class="ui-dropdown-menu">
+          <a href="#newSession">New Session</a>
+          <a href="#activeSession">Active Session</a>
         </div>
-    </div>
-</div>
+      </div>
+    </nav>
+  </div>
 
-<div id="loginBar" style="margin-bottom:10px;">
-    <button id="loginBtn">Sign in with Google</button>
-    <button id="logoutBtn" style="display:none;">Sign out</button>
-    <span id="userInfo" style="margin-left:10px; opacity:0.8;"></span>
-</div>
+  <div class="ui-appbar-right">
+    <button id="loginBtn" class="ui-btn">Sign in with Google</button>
+    <button id="logoutBtn" class="ui-btn" style="display:none;">Sign out</button>
+    <span id="userInfo" class="ui-userinfo"></span>
+  </div>
+
+</header>
+
+
+
+
 
 <!-- ========== F-STOP CALCULATOR SECTION BEGIN ========== -->
 
