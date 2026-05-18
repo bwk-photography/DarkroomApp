@@ -17,6 +17,11 @@
 <div class="nav-toggle">
     <button id="showCalcBtn" class="active">F‑Stop Calculator</button>
     <button id="showLogBtn">Print Log</button>
+    <button onclick="buttonContent('PrintSessionDiv')" id="printSessionBtn">Print Session</button>
+        <div id="PrintSessionDiv">
+            <a href="#newSession">New Session</a>
+            <a href="#activeSession">Active Session</a>
+        </div>
 </div>
 
 <div id="loginBar" style="margin-bottom:10px;">
@@ -141,6 +146,13 @@
 
 <!-- MAIN APP ENTRY -->
 <!-- ... body content above ... -->
+
+<script>
+    /* On button click, toggle between hiding and showing the dropdown content */
+    function buttonContent(className) {
+        document.getElementById(className).classList.toggle("show");
+    }
+</script>
 
 <!-- Firebase configuration and setup -->
 <script type="module">
