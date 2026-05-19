@@ -1,3 +1,6 @@
+/* ============================================================
+   TOKENS
+   ============================================================ */
 :root {
     /* Colors */
     --bg: #111;
@@ -22,8 +25,9 @@
     --font-large: 22px;
 }
 
-
-/* Atoms - BEGIN */
+/* ============================================================
+   ATOMS
+   ============================================================ */
 
 /* Buttons */
 .ui-btn {
@@ -35,12 +39,11 @@
     border: 1px solid var(--border);
     color: var(--text);
     cursor: pointer;
+    transition: background 150ms ease-out, opacity 150ms ease-out;
 }
 
-/* Icon alignment */
 .ui-btn svg {
-  margin-right: 6px;
-  stroke: var(--text);
+    stroke: var(--text);
 }
 
 .ui-btn:hover {
@@ -57,9 +60,9 @@
     cursor: not-allowed;
 }
 
-
 /* Inputs */
-.ui-input, .ui-select {
+.ui-input,
+.ui-select {
     padding: var(--space-3);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -67,48 +70,42 @@
     width: 100%;
 }
 
-
 /* Labels */
 .ui-label {
     margin-bottom: var(--space-2);
     color: var(--text-dim);
 }
 
+/* ============================================================
+   MOLECULES
+   ============================================================ */
 
-/* Atoms - END */
+/* Dropdown container */
+.ui-dropdown {
+    position: relative;
+}
 
-
-/* Molecules - BEGIN */
-
-
-/* Dropdowns */
-.ui-dropdown { position: relative; }
-
+/* Dropdown menu (animated) */
 .ui-dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+
     opacity: 0;
     transform: translateY(-6px);
-    transition: opacity 180ms ease-out, transform 180ms ease-out;;
-    display: none;
+    transition: opacity 180ms ease-out, transform 180ms ease-out;
+    pointer-events: none;
     position: absolute;
     top: 100%;
     left: 0;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    flex-direction: column;
     z-index: 1000;
 }
 
-/* Dropdown button layout */
-.ui-dropdown-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
 .ui-dropdown-menu.show {
-    display: flex;
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .ui-dropdown-menu a {
@@ -121,14 +118,12 @@
     background: var(--surface);
 }
 
-
 /* Control Row */
 .ui-control {
     display: flex;
     flex-direction: column;
     margin-bottom: var(--space-3);
 }
-
 
 /* Card */
 .ui-card {
@@ -137,11 +132,9 @@
     padding: var(--space-3);
 }
 
-
-/* Molecules - END */
-
-
-/* Organisms - BEGIN */
+/* ============================================================
+   ORGANISMS
+   ============================================================ */
 
 /* App Bar */
 .ui-appbar {
@@ -179,71 +172,67 @@
     font-size: var(--font-small);
 }
 
-/* Nav Bar */
+/* Desktop Nav */
 .ui-nav {
     display: flex;
     align-items: center;
     gap: var(--space-2);
 }
 
-
-/* ========================= */
-/*     MOBILE NAV MENU       */
-/* ========================= */
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
 
 .ui-menu-btn {
-    display: none; /* hidden on desktop */
+    display: none;
     font-size: 24px;
     padding: var(--space-2) var(--space-3);
 }
 
+.ui-menu-btn svg {
+    stroke: var(--text);
+}
+
+/* Mobile nav container (animated) */
 .ui-mobile-nav {
-    display: none;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 220ms ease-out, transform 220ms ease-out;
+    display: flex;
     flex-direction: column;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: var(--space-3);
     gap: var(--space-2);
+
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 220ms ease-out, transform 220ms ease-out;
+    pointer-events: none;
 }
 
 .ui-mobile-nav.show {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
     box-shadow: 0 0 18px rgba(79, 195, 247, 0.25);
 }
 
-/* Hamburger button icon */
-.ui-menu-btn svg {
-  stroke: var(--text);
-}
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
-
-/* MOBILE BREAKPOINT */
 @media (max-width: 700px) {
-
-    /* Show menu button */
     .ui-menu-btn {
         display: block;
     }
 
-    /* Hide desktop nav */
     .ui-nav {
         display: none;
     }
 
-    /* App Bar spacing */
     .ui-appbar {
         padding: var(--space-2) var(--space-3);
-        box-shadow: 0 0 12px rgba(79, 195, 247, 0.15);
     }
 
     .ui-appbar-title {
         font-size: var(--font-base);
     }
 }
-
-/* Organisms - END */
-
