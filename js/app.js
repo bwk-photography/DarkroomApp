@@ -52,7 +52,35 @@ document.addEventListener("DOMContentLoaded", () => {
     update();
 
     /* ============================================================
-       NAVIGATION + DROPDOWNS (ANIMATED)
+       5. VIEW SWITCHING (CALCULATOR <-> PRINT LOG)
+       ============================================================ */
+    const calcView = document.getElementById("calcView");
+    const logView  = document.getElementById("logView");
+
+    // Desktop
+    document.getElementById("showCalcBtn").addEventListener("click", () => {
+        calcView.style.display = "block";
+        logView.style.display = "none";
+    });
+
+    document.getElementById("showLogBtn").addEventListener("click", () => {
+        calcView.style.display = "none";
+        logView.style.display = "block";
+    });
+
+    // Mobile
+    document.getElementById("showCalcBtn_m").addEventListener("click", () => {
+        calcView.style.display = "block";
+        logView.style.display = "none";
+    });
+
+    document.getElementById("showLogBtn_m").addEventListener("click", () => {
+        calcView.style.display = "none";
+        logView.style.display = "block";
+    });
+
+    /* ============================================================
+       6. NAVIGATION + DROPDOWNS (ANIMATED)
        ============================================================ */
 
     /* DESKTOP DROPDOWN (animated) */
