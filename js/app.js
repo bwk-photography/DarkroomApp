@@ -5,7 +5,7 @@ import { render } from "./renderer.js";
 import { exportPDF } from "./pdf.js";
 
 /* ============================================================
-   CORE UPDATE FUNCTION
+   CORE UPDATE
    ============================================================ */
 function update() {
     readInputs();
@@ -14,76 +14,74 @@ function update() {
 }
 
 /* ============================================================
-   INITIALIZE APP
+   INIT
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* -----------------------------
-       1. INPUT LISTENERS
-       ----------------------------- */
+    /* INPUT LISTENERS */
     setupEvents(update);
 
-    /* -----------------------------
-       2. CARDS / TABLE TOGGLE
-       ----------------------------- */
-    const cardBtn  = document.getElementById("cardBtn");
-    const tableBtn = document.getElementById("tableBtn");
-
-    cardBtn.addEventListener("click", () => {
+    /* CARDS / TABLE TOGGLE */
+    document.getElementById("cardBtn").addEventListener("click", () => {
         state.settings.viewMode = "cards";
         setActiveToggle("cardBtn");
         update();
     });
 
-    tableBtn.addEventListener("click", () => {
+    document.getElementById("tableBtn").addEventListener("click", () => {
         state.settings.viewMode = "table";
         setActiveToggle("tableBtn");
         update();
     });
 
-    /* -----------------------------
-       3. EXPORT PDF
-       ----------------------------- */
+    /* EXPORT PDF */
     document.getElementById("exportBtn").addEventListener("click", exportPDF);
 
-    /* -----------------------------
-       4. INITIAL CALCULATION
-       ----------------------------- */
+    /* INITIAL RENDER */
     update();
 
     /* ============================================================
-       5. VIEW SWITCHING (CALCULATOR <-> PRINT LOG)
+       VIEW SWITCHING (CALC <-> LOG)
        ============================================================ */
     const calcView = document.getElementById("calcView");
     const logView  = document.getElementById("logView");
+
+    function setActiveView(btnId) {
+        document.querySelectorAll("#showCalcBtn, #showLogBtn").forEach(btn =>
+            btn.classList.remove("active")
+        );
+        document.getElementById(btnId).classList.add("active");
+    }
 
     // Desktop
     document.getElementById("showCalcBtn").addEventListener("click", () => {
         calcView.style.display = "block";
         logView.style.display = "none";
+        setActiveView("showCalcBtn");
     });
 
     document.getElementById("showLogBtn").addEventListener("click", () => {
         calcView.style.display = "none";
         logView.style.display = "block";
+        setActiveView("showLogBtn");
     });
 
     // Mobile
     document.getElementById("showCalcBtn_m").addEventListener("click", () => {
         calcView.style.display = "block";
         logView.style.display = "none";
+        setActiveView("showCalcBtn");
     });
 
     document.getElementById("showLogBtn_m").addEventListener("click", () => {
         calcView.style.display = "none";
         logView.style.display = "block";
+        setActiveView("showLogBtn");
     });
 
     /* ============================================================
-       6. NAVIGATION + DROPDOWNS (ANIMATED)
+       DESKTOP DROPDOWN (ANIMATED)
        ============================================================ */
-
-    /* DESKTOP DROPDOWN (animated) */
     const sessionBtn = document.getElementById("printSessionBtn");
     const sessionMenu = document.getElementById("PrintSessionDiv");
 
@@ -96,7 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionMenu.classList.remove("show");
     });
 
-    /* MOBILE MENU (animated) */
+    /* ============================================================
+       MOBILE MENU (ANIMATED)
+       ============================================================ */
     const menuBtn = document.getElementById("menuToggle");
     const mobileNav = document.getElementById("mobileNav");
 
@@ -109,7 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileNav.classList.remove("show");
     });
 
-    /* MOBILE DROPDOWN (animated) */
+    /* ============================================================
+       MOBILE DROPDOWN (ANIMATED)
+       ============================================================ */
     const sessionBtn_m = document.getElementById("printSessionBtn_m");
     const sessionMenu_m = document.getElementById("PrintSessionDiv_m");
 

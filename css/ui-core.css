@@ -2,7 +2,6 @@
    TOKENS
    ============================================================ */
 :root {
-    /* Colors */
     --bg: #111;
     --bg-alt: #1a1a1a;
     --surface: #222;
@@ -12,14 +11,12 @@
     --text-dim: #aaa;
     --accent: #4fc3f7;
 
-    /* Spacing */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
     --space-4: 16px;
     --space-5: 20px;
 
-    /* Typography */
     --font-base: 18px;
     --font-small: 15px;
     --font-large: 22px;
@@ -29,7 +26,6 @@
    ATOMS
    ============================================================ */
 
-/* Buttons */
 .ui-btn {
     display: flex;
     align-items: center;
@@ -42,64 +38,44 @@
     transition: background 150ms ease-out, opacity 150ms ease-out;
 }
 
-.ui-btn svg {
-    stroke: var(--text);
-}
-
-.ui-btn:hover {
-    background: var(--surface-alt);
-}
-
 .ui-btn.active {
     background: var(--accent);
     color: #000;
 }
 
-.ui-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-/* Inputs */
 .ui-input,
 .ui-select {
     padding: var(--space-3);
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
-    width: 100%;
-}
-
-/* Labels */
-.ui-label {
-    margin-bottom: var(--space-2);
-    color: var(--text-dim);
 }
 
 /* ============================================================
    MOLECULES
    ============================================================ */
 
-/* Dropdown container */
 .ui-dropdown {
     position: relative;
 }
 
-/* Dropdown menu (animated) */
+/* Desktop dropdown animation */
 .ui-dropdown-menu {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 180ms ease-out, transform 180ms ease-out;
-    pointer-events: none;
     position: absolute;
     top: 100%;
     left: 0;
-    z-index: 1000;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+
+    transition:
+        opacity 180ms ease-out,
+        transform 180ms ease-out;
 }
 
 .ui-dropdown-menu.show {
@@ -108,35 +84,10 @@
     pointer-events: auto;
 }
 
-.ui-dropdown-menu a {
-    padding: var(--space-3) var(--space-4);
-    color: var(--text);
-    text-decoration: none;
-}
-
-.ui-dropdown-menu a:hover {
-    background: var(--surface);
-}
-
-/* Control Row */
-.ui-control {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: var(--space-3);
-}
-
-/* Card */
-.ui-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: var(--space-3);
-}
-
 /* ============================================================
    ORGANISMS
    ============================================================ */
 
-/* App Bar */
 .ui-appbar {
     display: flex;
     justify-content: space-between;
@@ -144,35 +95,9 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: var(--space-3) var(--space-4);
-    margin-bottom: var(--space-4);
-    box-shadow: 0 0 12px rgba(79, 195, 247, 0.15);
+    margin: 0; /* prevents vertical gap */
 }
 
-.ui-appbar-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-5);
-}
-
-.ui-appbar-title {
-    font-size: var(--font-large);
-    margin: 0;
-    color: var(--text);
-    white-space: nowrap;
-}
-
-.ui-appbar-right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-}
-
-.ui-userinfo {
-    opacity: 0.8;
-    font-size: var(--font-small);
-}
-
-/* Desktop Nav */
 .ui-nav {
     display: flex;
     align-items: center;
@@ -180,39 +105,39 @@
 }
 
 /* ============================================================
-   MOBILE NAV
+   MOBILE NAV (ANIMATED, NO GAP)
    ============================================================ */
 
 .ui-menu-btn {
     display: none;
-    font-size: 24px;
-    padding: var(--space-2) var(--space-3);
 }
 
-.ui-menu-btn svg {
-    stroke: var(--text);
-}
-
-/* Mobile nav container (animated) */
 .ui-mobile-nav {
-    display: flex;
-    flex-direction: column;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
     gap: var(--space-2);
 
+    /* animation */
     opacity: 0;
     transform: translateY(-10px);
-    transition: opacity 220ms ease-out, transform 220ms ease-out;
+    max-height: 0;
+    overflow: hidden;
     pointer-events: none;
+
+    transition:
+        opacity 220ms ease-out,
+        transform 220ms ease-out,
+        max-height 220ms ease-out;
 }
 
 .ui-mobile-nav.show {
     opacity: 1;
     transform: translateY(0);
+    max-height: 500px;
     pointer-events: auto;
-    box-shadow: 0 0 18px rgba(79, 195, 247, 0.25);
 }
 
 /* ============================================================
@@ -223,16 +148,7 @@
     .ui-menu-btn {
         display: block;
     }
-
     .ui-nav {
         display: none;
-    }
-
-    .ui-appbar {
-        padding: var(--space-2) var(--space-3);
-    }
-
-    .ui-appbar-title {
-        font-size: var(--font-base);
     }
 }
