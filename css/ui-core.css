@@ -85,6 +85,9 @@
 .ui-dropdown { position: relative; }
 
 .ui-dropdown-menu {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 180ms ease-out, transform 180ms ease-out;;
     display: none;
     position: absolute;
     top: 100%;
@@ -104,6 +107,8 @@
 
 .ui-dropdown-menu.show {
     display: flex;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .ui-dropdown-menu a {
@@ -194,11 +199,20 @@
 
 .ui-mobile-nav {
     display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 220ms ease-out, transform 220ms ease-out;
     flex-direction: column;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     padding: var(--space-3);
     gap: var(--space-2);
+}
+
+.ui-mobile-nav.show {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 18px rgba(79, 195, 247, 0.25);
 }
 
 /* Hamburger button icon */

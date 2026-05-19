@@ -14,12 +14,12 @@ function update() {
 }
 
 /* ============================================================
-   INITIALIZE CALCULATOR + UI
+   INITIALIZE APP
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
 
     /* -----------------------------
-       1. SET UP INPUT LISTENERS
+       1. INPUT LISTENERS
        ----------------------------- */
     setupEvents(update);
 
@@ -52,10 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
     update();
 
     /* ============================================================
-       NAVIGATION + DROPDOWNS (your new UI system)
+       NAVIGATION + DROPDOWNS (ANIMATED)
        ============================================================ */
 
-    /* DESKTOP DROPDOWN */
+    /* DESKTOP DROPDOWN (animated) */
     const sessionBtn = document.getElementById("printSessionBtn");
     const sessionMenu = document.getElementById("PrintSessionDiv");
 
@@ -68,21 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionMenu.classList.remove("show");
     });
 
-    /* MOBILE MENU */
+    /* MOBILE MENU (animated) */
     const menuBtn = document.getElementById("menuToggle");
     const mobileNav = document.getElementById("mobileNav");
 
     menuBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        mobileNav.style.display =
-            mobileNav.style.display === "flex" ? "none" : "flex";
+        mobileNav.classList.toggle("show");
     });
 
     document.addEventListener("click", () => {
-        mobileNav.style.display = "none";
+        mobileNav.classList.remove("show");
     });
 
-    /* MOBILE DROPDOWN */
+    /* MOBILE DROPDOWN (animated) */
     const sessionBtn_m = document.getElementById("printSessionBtn_m");
     const sessionMenu_m = document.getElementById("PrintSessionDiv_m");
 
